@@ -76,6 +76,8 @@ class MeetupResponse {
                     id: groupID
                 )
                 
+                print("Fetch TEST")
+                
                 return Meetup(
                     eventName: eventName,
                     meetupDescription: eventDescription,

@@ -33,10 +33,13 @@ class NetworkOperation {
                             }
                         }
                     } catch { print("nil Value") }
-                default: print("get request not successful. HTTP status code: \(httpResponse.statusCode)")
+                default:
+                    print("get request not successful. HTTP status code: \(httpResponse.statusCode)")
+                    NSNotificationCenter.defaultCenter().postNotificationName("dataNotFinishedLoading", object: self)
                 }
             } else {
                 print("Invalid HTTP response")
+                NSNotificationCenter.defaultCenter().postNotificationName("dataNotFinishedLoading", object: self)
             }
         }
         

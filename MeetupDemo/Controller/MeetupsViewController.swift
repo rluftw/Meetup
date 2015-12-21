@@ -48,15 +48,24 @@ class MeetupsViewController: UIViewController, UITableViewDataSource, UITableVie
         super.viewWillAppear(animated)
         
         // Observe when data is finished loading
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "dataFetchFail:", name: "dataNotFinishedLoading", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "dataFetchSuccess:", name: "dataFinishedLoading", object: nil)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "dataNotFinishedLoading", object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: "dataFinishedLoading", object: nil)
     }
     
+    // Todo: Look back at this after pull to refresh implementation
+    /*override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        if CLLocationManager.authorizationStatus() == .Denied {
+            performSegueWithIdentifier("GPSRequestNotify", sender: self)
+        }
+    }*/
     
     // MARK: - TableView DataSource Methods
     
@@ -113,8 +122,10 @@ class MeetupsViewController: UIViewController, UITableViewDataSource, UITableVie
             view.addSubview(spinner!)
             locationManager.startUpdatingLocation()
         case .Denied:
-            spinner?.dismiss()
-            performSegueWithIdentifier("GPSRequestNotify", sender: self)
+            if navigationController?.viewControllers.last is MeetupsViewController {
+                spinner?.dismiss()
+                performSegueWithIdentifier("GPSRequestNotify", sender: self)
+            }
         default: break
         }
     }
@@ -134,6 +145,22 @@ class MeetupsViewController: UIViewController, UITableViewDataSource, UITableVie
         dispatch_async(dispatch_get_main_queue()) { () -> Void in
             self.spinner?.dismiss()
             self.tableView?.reloadData()
+        }
+    }
+    
+    func dataFetchFail(notification: NSNotification) {
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            self.spinner?.dismiss()
+            
+            // May stack
+            if !(self.navigationController?.viewControllers.last is UIAlertController) {
+                let alert = UIAlertController(
+                    title: "Network Error",
+                    message: "Failed to retrieve meetups. Please check your network connection.",
+                    preferredStyle: .Alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
+                self.presentViewController(alert, animated: true, completion: nil)
+            }
         }
     }
     
