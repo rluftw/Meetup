@@ -55,7 +55,6 @@ class MeetupResponse {
                     address1: venueAddress1,
                     address2:  venueAddress2)
 
-                print("Longitude: \(venueLon)\nLatitude: \(venueLat)")
                 
                 // Gather data from the "group" dictionary
                 let groupDictionary = meetupDictionary["group"] as! [String: AnyObject]
@@ -67,8 +66,6 @@ class MeetupResponse {
                 let groupID = groupDictionary["id"] as? Int
                 let groupWho = groupDictionary["who"] as? String
                
-                print("Event Name: \(eventName!)\nEvent Status: \(eventStatus)\nEvent Yes RSVP Count: \(yesRSVPCount!)\nEvent URL: \(eventURL!)\nEvent Time: \(eventTime!)\nEvent ID: \(eventID!)\nEvent Duration: \(eventDuration)\nEvent Description: \(eventDescription)")
-                print("Group Name: \(groupName!)\nJoin mode: \(joinMode!)\nGroup Creation Date: \(groupCreation!)\nGroup URL Name: \(groupURLName!)\nGroup ID: \(groupID!)\nGroup Who: \(groupWho!)\n\n")
                 
                 let group = MeetupGroup(
                     joinMode: joinMode,

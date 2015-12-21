@@ -1,20 +1,17 @@
 //
-//  DetailedMeetupTableViewCell.swift
+//  AddressTableViewCell.swift
 //  MeetupDemo
 //
-//  Created by Xing Hui Lu on 12/20/15.
+//  Created by Xing Hui Lu on 12/21/15.
 //  Copyright © 2015 Xing Hui Lu. All rights reserved.
 //
 
 import UIKit
 
-class DetailedMeetupTableViewCell: UITableViewCell {
-    
-    @IBOutlet var eventName: UILabel?
-    @IBOutlet var eventDescription: UILabel?
-    @IBOutlet var eventStatus: UILabel?
-    @IBOutlet var eventDate: UILabel?
-    @IBOutlet var eventStartTime: UILabel?
+class AddressTableViewCell: UITableViewCell {
+
+    @IBOutlet var address1: UILabel?
+    @IBOutlet var address2: UILabel?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -26,4 +23,5 @@ class DetailedMeetupTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+
 }

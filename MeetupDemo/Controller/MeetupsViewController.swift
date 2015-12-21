@@ -24,7 +24,7 @@ class MeetupsViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     var spinner: JHSpinnerView?
     
-    var APIKey = "-> API KEY HERE <-"
+    private var APIKey = "API KEY HERE"
     var locationManager = CLLocationManager()
     
     // Model
