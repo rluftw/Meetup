@@ -224,23 +224,24 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" zoomEnabled="NO" scrollEnabled="NO" rotateEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NbF-ow-uLl">
-                                <rect key="frame" x="0.0" y="64" width="600" height="206"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="206" id="V6y-Vh-zhR"/>
-                                </constraints>
-                            </mapView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="142" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Ofk-nR-1x5">
-                                <rect key="frame" x="0.0" y="270" width="600" height="330"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <view key="tableFooterView" contentMode="scaleToFill" id="cFa-yJ-C8n">
-                                    <rect key="frame" x="0.0" y="283" width="600" height="0.0"/>
+                                <mapView key="tableHeaderView" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" zoomEnabled="NO" scrollEnabled="NO" rotateEnabled="NO" id="NbF-ow-uLl">
+                                    <rect key="frame" x="0.0" y="64" width="600" height="206"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </view>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="206" id="V6y-Vh-zhR"/>
+                                    </constraints>
+                                    <variation key="default">
+                                        <mask key="constraints">
+                                            <exclude reference="V6y-Vh-zhR"/>
+                                        </mask>
+                                    </variation>
+                                </mapView>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" rowHeight="153" id="bqA-uf-VUZ" customClass="DetailedMeetupTableViewCell" customModule="MeetupDemo" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="600" height="153"/>
+                                        <rect key="frame" x="0.0" y="298" width="600" height="153"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bqA-uf-VUZ" id="u4y-hT-eog">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="153"/>
@@ -359,7 +360,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AddressCell" rowHeight="102" id="ue8-uQ-whU" customClass="AddressTableViewCell" customModule="MeetupDemo" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="181" width="600" height="102"/>
+                                        <rect key="frame" x="0.0" y="451" width="600" height="102"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ue8-uQ-whU" id="hIf-MB-r20">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="102"/>
@@ -445,14 +446,17 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="NbF-ow-uLl" firstAttribute="leading" secondItem="32O-eU-Ssa" secondAttribute="leading" id="0SM-aw-9Ha"/>
-                            <constraint firstItem="NbF-ow-uLl" firstAttribute="top" secondItem="32O-eU-Ssa" secondAttribute="top" constant="64" id="3PR-oB-z84"/>
-                            <constraint firstItem="Ofk-nR-1x5" firstAttribute="leading" secondItem="NbF-ow-uLl" secondAttribute="leading" id="CiX-ya-AjS"/>
-                            <constraint firstItem="Ofk-nR-1x5" firstAttribute="top" secondItem="NbF-ow-uLl" secondAttribute="bottom" id="ahX-gx-Qy1"/>
+                            <constraint firstItem="Ofk-nR-1x5" firstAttribute="top" secondItem="32O-eU-Ssa" secondAttribute="topMargin" id="AQU-Xu-Ere"/>
+                            <constraint firstItem="Ofk-nR-1x5" firstAttribute="bottom" secondItem="n2W-7S-PrJ" secondAttribute="top" id="MGB-Fd-le1"/>
+                            <constraint firstAttribute="trailing" secondItem="Ofk-nR-1x5" secondAttribute="trailing" id="Q12-Ni-CC1"/>
+                            <constraint firstItem="Ofk-nR-1x5" firstAttribute="leading" secondItem="32O-eU-Ssa" secondAttribute="leading" id="Tni-X9-nAy"/>
                             <constraint firstItem="Ofk-nR-1x5" firstAttribute="bottom" secondItem="n2W-7S-PrJ" secondAttribute="top" id="cUI-EN-aIQ"/>
-                            <constraint firstAttribute="trailing" secondItem="NbF-ow-uLl" secondAttribute="trailing" id="hhY-a3-ae6"/>
-                            <constraint firstItem="Ofk-nR-1x5" firstAttribute="trailing" secondItem="NbF-ow-uLl" secondAttribute="trailing" id="pXQ-IR-OZ6"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="cUI-EN-aIQ"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="mapView" destination="NbF-ow-uLl" id="pBd-LX-6O2"/>
