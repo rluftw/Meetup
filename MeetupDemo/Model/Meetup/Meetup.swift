@@ -12,7 +12,7 @@ class Meetup {
     let timeInMillisec: Int?
     let durationInMillisec: Int?
     var meetupDescription: String?
-    let eventURL: NSURL?
+    let eventURL: URL?
     let yesRSVPCount: Int?
     let id: String?
     let status: String?
@@ -34,7 +34,7 @@ class Meetup {
         }
     }
     
-    init(eventName: String?, meetupDescription: String?, eventURL: NSURL?, yesRSVPCount: Int?,
+    init(eventName: String?, meetupDescription: String?, eventURL: URL?, yesRSVPCount: Int?,
         durationInMillisec: Int?, id: String?, timeInMillisec: Int?, status: String?, group: MeetupGroup, venue: MeetupVenue) {
         self.name = eventName
         self.meetupDescription = meetupDescription

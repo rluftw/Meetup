@@ -14,18 +14,18 @@ class GPSPromptViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "onResume", name: UIApplicationDidBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(GPSPromptViewController.onResume), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
     }
 
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidBecomeActiveNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
     }
     
     func onResume() {
-        if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse {
-            dismissViewControllerAnimated(true, completion: nil)
+        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
+            dismiss(animated: true, completion: nil)
         }
     }
 }

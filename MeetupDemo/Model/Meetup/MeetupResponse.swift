@@ -15,14 +15,14 @@ class MeetupResponse {
         if let allMeetups = meetupDictionary["results"] as? [[String: AnyObject]] {
             results = allMeetups.map({ (meetupDictionary) -> Meetup in
                 var eventDescription = meetupDictionary["description"] as? String
-                eventDescription = eventDescription?.stringByReplacingOccurrencesOfString("(<[^>]+>)",
-                    withString: "",
-                    options: .RegularExpressionSearch,
+                eventDescription = eventDescription?.replacingOccurrences(of: "(<[^>]+>)",
+                    with: "",
+                    options: .regularExpression,
                     range: nil)
                 
-                var eventURL: NSURL?
+                var eventURL: URL?
                 if let url = meetupDictionary["event_url"] as? String {
-                    eventURL = NSURL(string: url)
+                    eventURL = URL(string: url)
                 }
                 
                 let yesRSVPCount = meetupDictionary["yes_rsvp_count"] as? Int

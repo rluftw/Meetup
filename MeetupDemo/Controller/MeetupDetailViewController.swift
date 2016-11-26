@@ -13,7 +13,7 @@ class MeetupDetailViewController: UIViewController, UITableViewDataSource, UITab
     
     @IBOutlet var mapView: MKMapView? {
         didSet {
-            let tapGesture = UITapGestureRecognizer(target: self, action: "mapTapped")
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(MeetupDetailViewController.mapTapped))
             tapGesture.numberOfTapsRequired = 1
             tapGesture.numberOfTouchesRequired = 1
             mapView?.addGestureRecognizer(tapGesture)
@@ -63,13 +63,13 @@ class MeetupDetailViewController: UIViewController, UITableViewDataSource, UITab
     
     // MARK: - TableView Datasource Methods
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
-            let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! DetailedMeetupTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! DetailedMeetupTableViewCell
             
             cell.backgroundColor = UIColor(patternImage: UIImage(named: "giftly")!)
             
@@ -93,7 +93,7 @@ class MeetupDetailViewController: UIViewController, UITableViewDataSource, UITab
             
             return cell
         } else {
-            let cell = tableView.dequeueReusableCellWithIdentifier("AddressCell", forIndexPath: indexPath) as! AddressTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "AddressCell", for: indexPath) as! AddressTableViewCell
             
             if let address1 = meetup.venue.address1 {
                 cell.address1?.text = address1
@@ -115,14 +115,14 @@ class MeetupDetailViewController: UIViewController, UITableViewDataSource, UITab
     
     // MARK: - MKMapView Delegate Methods
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let identifier = "MyPin"
         
-        if annotation.isKindOfClass(MKUserLocation) {
+        if annotation.isKind(of: MKUserLocation.self) {
             return nil
         }
         
-        let annotationView  = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier) as? MKPinAnnotationView
+        let annotationView  = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
         annotationView?.pinTintColor = UIColor(red: 29/255.0, green: 207/255.0, blue: 161/255, alpha: 0.9)
         
         return annotationView
@@ -137,19 +137,19 @@ class MeetupDetailViewController: UIViewController, UITableViewDataSource, UITab
             url = "\(url)\(lat),\(lon)"
         }
         
-        UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+        UIApplication.shared.openURL(URL(string: url)!)
     }
     
     // MARK: - Helper Methods
     
-    func dateFromUnixTime(time: Int) -> (date: String, time: String) {
-        let dateObject = NSDate(timeIntervalSince1970: NSTimeInterval(time))
-        let formatter = NSDateFormatter()
+    func dateFromUnixTime(_ time: Int) -> (date: String, time: String) {
+        let dateObject = Date(timeIntervalSince1970: TimeInterval(time))
+        let formatter = DateFormatter()
         formatter.dateFormat = "MMM dd, yyyy"
-        let date = formatter.stringFromDate(dateObject)
+        let date = formatter.string(from: dateObject)
         
         formatter.dateFormat = "h:mm a"
-        let time = formatter.stringFromDate(dateObject)
+        let time = formatter.string(from: dateObject)
         
         return (date, time)
     }

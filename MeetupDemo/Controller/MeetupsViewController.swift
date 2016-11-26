@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import JHSpinner
 import CoreLocation
 
 class MeetupsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, CLLocationManagerDelegate {
@@ -22,9 +21,8 @@ class MeetupsViewController: UIViewController, UITableViewDataSource, UITableVie
             tableView?.estimatedRowHeight = 102
         }
     }
-    var spinner: JHSpinnerView?
     
-    private var APIKey = "API KEY HERE"
+    fileprivate var APIKey = "5e5777d5e6b4037445d7d2845233672"
     var locationManager = CLLocationManager()
     
     // Model
@@ -44,19 +42,19 @@ class MeetupsViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         // Observe when data is finished loading
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "dataFetchFail:", name: "dataNotFinishedLoading", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "dataFetchSuccess:", name: "dataFinishedLoading", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MeetupsViewController.dataFetchFail(_:)), name: NSNotification.Name(rawValue: "dataNotFinishedLoading"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MeetupsViewController.dataFetchSuccess(_:)), name: NSNotification.Name(rawValue: "dataFinishedLoading"), object: nil)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: "dataNotFinishedLoading", object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: "dataFinishedLoading", object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "dataNotFinishedLoading"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "dataFinishedLoading"), object: nil)
     }
     
     // Todo: Look back at this after pull to refresh implementation
@@ -69,15 +67,15 @@ class MeetupsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     // MARK: - TableView DataSource Methods
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let count = meetups?.count else { return 0 }
         return count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! MeetupTableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! MeetupTableViewCell
         
-        cell.selectionStyle = .None;
+        cell.selectionStyle = .none;
         
         if let name = meetups?[indexPath.row].name {
             cell.meetupTitle?.text = name
@@ -105,32 +103,26 @@ class MeetupsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     // MARK: - TableView Delegate Methods 
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
     }
     
     
     // MARK: - CLLocationManager Delegate Methods
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         switch status {
-        case .AuthorizedWhenInUse:
+        case .authorizedWhenInUse:
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
-            spinner = JHSpinnerView.showOnView(view,
-                spinnerColor:UIColor.whiteColor(),
-                overlay:.Circular,
-                overlayColor:UIColor(red: 29/255.0, green: 207/255.0, blue: 161/255, alpha: 0.9))
-            view.addSubview(spinner!)
             locationManager.startUpdatingLocation()
-        case .Denied:
+        case .denied:
             if navigationController?.viewControllers.last is MeetupsViewController {
-                spinner?.dismiss()
-                performSegueWithIdentifier("GPSRequestNotify", sender: self)
+                performSegue(withIdentifier: "GPSRequestNotify", sender: self)
             }
         default: break
         }
     }
     
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         manager.stopUpdatingLocation()
         if let coordinates = locations.last?.coordinate {
             updateData(lat: coordinates.latitude, lon: coordinates.longitude)
@@ -141,57 +133,54 @@ class MeetupsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     // MARK: - Observer Methods
     
-    func dataFetchSuccess(notification: NSNotification) {
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            self.spinner?.dismiss()
+    func dataFetchSuccess(_ notification: Notification) {
+        DispatchQueue.main.async { () -> Void in
             self.tableView?.reloadData()
         }
     }
     
-    func dataFetchFail(notification: NSNotification) {
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            self.spinner?.dismiss()
-            
+    func dataFetchFail(_ notification: Notification) {
+        DispatchQueue.main.async { () -> Void in            
             // May stack
             if !(self.navigationController?.viewControllers.last is UIAlertController) {
                 let alert = UIAlertController(
                     title: "Network Error",
                     message: "Failed to retrieve meetups. Please check your network connection.",
-                    preferredStyle: .Alert)
-                alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
-                self.presentViewController(alert, animated: true, completion: nil)
+                    preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
             }
         }
     }
     
     // MARK: - Helper Methods
     
-    func updateData(lat lat: Double, lon: Double) {
+    func updateData(lat: Double, lon: Double) {
         // CLLocationManager to gather Location
         MeetupService(APIKey: APIKey).getMeetups(lat:lat, lon:lon) { (response) -> Void in
             self.meetups = response.results
         }
     }
     
-    func dateFromUnixTime(time: Int) -> (date: String, time: String) {
-        let dateObject = NSDate(timeIntervalSince1970: NSTimeInterval(time))
-        let formatter = NSDateFormatter()
+    func dateFromUnixTime(_ time: Int) -> (date: String, time: String) {
+        let dateObject = Date(timeIntervalSince1970: TimeInterval(time))
+        let formatter = DateFormatter()
         formatter.dateFormat = "MMM dd, yyyy"
-        let date = formatter.stringFromDate(dateObject)
+        let date = formatter.string(from: dateObject)
 
         formatter.dateFormat = "h:mm a"
-        let time = formatter.stringFromDate(dateObject)
+        let time = formatter.string(from: dateObject)
         
         return (date, time)
     }
     
     // MARK: - Navigation
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowMeetupDetail" {
             if let cell = sender as? UITableViewCell {
-                let indexPath = tableView?.indexPathForCell(cell)
-                if let detailVC = segue.destinationViewController as? MeetupDetailViewController {
+                let indexPath = tableView?.indexPath(for: cell)
+                if let detailVC = segue.destination as? MeetupDetailViewController {
                     detailVC.meetup = meetups![indexPath!.row]
                 }
             }

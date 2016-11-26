@@ -9,39 +9,39 @@
 import Foundation
 
 class NetworkOperation {
-    lazy var config: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
-    lazy var session: NSURLSession = NSURLSession(configuration: self.config)
-    let queryURL: NSURL
+    lazy var config: URLSessionConfiguration = URLSessionConfiguration.default
+    lazy var session: URLSession = URLSession(configuration: self.config)
+    let queryURL: URL
 
-    typealias JSONDictionaryCompletion = [String: AnyObject]? -> Void
+    typealias JSONDictionaryCompletion = ([String: AnyObject]?) -> Void
     
-    init(url: NSURL) {
+    init(url: URL) {
         queryURL = url
     }
     
-    func downloadJSONFromURL(completion: JSONDictionaryCompletion) {
-        let request = NSURLRequest(URL: queryURL)
-        let dataTask = session.dataTaskWithRequest(request) { (data, response, error) -> Void in
-            if let httpResponse = response as? NSHTTPURLResponse {
+    func downloadJSONFromURL(_ completion: @escaping JSONDictionaryCompletion) {
+        let request = URLRequest(url: queryURL)
+        let dataTask = session.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+            if let httpResponse = response as? HTTPURLResponse {
                 switch httpResponse.statusCode {
                 case 200:
                     do {
                         if let retrievedData = data {
-                            if let JSONDictionary = try NSJSONSerialization.JSONObjectWithData(retrievedData, options: .MutableLeaves) as? [String: AnyObject] {
+                            if let JSONDictionary = try JSONSerialization.jsonObject(with: retrievedData, options: .mutableLeaves) as? [String: AnyObject] {
                                 completion(JSONDictionary)
-                                NSNotificationCenter.defaultCenter().postNotificationName("dataFinishedLoading", object: self)
+                                NotificationCenter.default.post(name: Notification.Name(rawValue: "dataFinishedLoading"), object: self)
                             }
                         }
                     } catch { print("nil Value") }
                 default:
                     print("get request not successful. HTTP status code: \(httpResponse.statusCode)")
-                    NSNotificationCenter.defaultCenter().postNotificationName("dataNotFinishedLoading", object: self)
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: "dataNotFinishedLoading"), object: self)
                 }
             } else {
                 print("Invalid HTTP response")
-                NSNotificationCenter.defaultCenter().postNotificationName("dataNotFinishedLoading", object: self)
+                NotificationCenter.default.post(name: Notification.Name(rawValue: "dataNotFinishedLoading"), object: self)
             }
-        }
+        }) 
         
         dataTask.resume()
     }
